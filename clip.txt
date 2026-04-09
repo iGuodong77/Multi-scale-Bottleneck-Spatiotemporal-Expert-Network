@@ -1,0 +1,59 @@
+import numpy as np
+
+# coord 和 label 都是 list，需要转 numpy
+coords = np.array(coord)    # (N, 2)
+labels = np.array(label)    # (N,)
+
+N = len(labels)
+print("总样本:", N)
+
+# 获取每类数量
+classes, counts = np.unique(labels, return_counts=True)
+idx0 = np.where(labels == 0)[0]   # 多数类
+idx1 = np.where(labels == 1)[0]   # 少数类
+
+num_classes = len(classes)
+
+# 想要抽取总量的 10%
+train_target = int(N * 0.1)
+
+# 每个类别要抽取的数量
+per_class = train_target // num_classes
+
+# 检查是否超过最少类的数量
+min_class_count = min(counts)
+
+if per_class > min_class_count:
+    per_class = min_class_count
+    train_target = per_class * num_classes
+    print(f"⚠ 少数类样本不足，自动调整：每类抽 {per_class}，总训练样本 {train_target}")
+
+print(f"每类抽取 {per_class} 个样本，共 {train_target} 个训练样本。")
+
+# 固定随机数种子
+rng = np.random.default_rng(42)
+
+# 分别对两类随机采样
+sel0 = rng.choice(idx0, per_class, replace=False)
+sel1 = rng.choice(idx1, per_class, replace=False)
+
+# 合并训练集索引
+train_indices = np.concatenate([sel0, sel1])
+rng.shuffle(train_indices)
+
+# 构建训练集
+train_coord = coords[train_indices]
+train_label = labels[train_indices]
+
+# 剩余样本作为测试集（如果你需要）
+all_indices = np.arange(N)
+mask = np.ones(N, dtype=bool)
+mask[train_indices] = False
+test_indices = all_indices[mask]
+
+test_coord = coords[test_indices]
+test_label = labels[test_indices]
+
+print("训练集最终样本:", len(train_label))
+print("  其中类别 0:", (train_label == 0).sum())
+print("  其中类别 1:", (train_label == 1).sum())
