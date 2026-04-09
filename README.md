@@ -4,4 +4,4 @@ The project is a multi-scale bottleneck spatiotemporal expert network suitable f
 
 Author：Guodong Sun, Shou Feng, Yongqi Chen, Chunying Ren, Huixin Ren, Chunhui Zhao
 
- First place of employment: College of Information and Communication Engineering, Harbin Engineering University, Harbin 150001, China;
+ First place of employment: College of Information and Communication Engineering, Harbin Engineering University, Harbin 150001, China
